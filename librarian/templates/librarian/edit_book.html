@@ -1,0 +1,315 @@
+{% extends 'catalog/layout.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="card">
+        <h2>Edit Book</h2>
+        <form method="post" enctype="multipart/form-data" class="form">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title" value="{{ book.title }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" name="author" id="author" value="{{ book.author }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" name="isbn" id="isbn" value="{{ book.isbn }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <select name="genre" id="genre" required>
+                        <optgroup label="Literature">
+                            <option value="Classic Literature" {% if book.genre == 'Classic Literature' %}selected{% endif %}>Classic Literature</option>
+                            <option value="Contemporary Fiction" {% if book.genre == 'Contemporary Fiction' %}selected{% endif %}>Contemporary Fiction</option>
+                            <option value="Poetry" {% if book.genre == 'Poetry' %}selected{% endif %}>Poetry</option>
+                            <option value="Drama" {% if book.genre == 'Drama' %}selected{% endif %}>Drama</option>
+                        </optgroup>
+
+                        <optgroup label="Genre Fiction">
+                            <option value="Mystery" {% if book.genre == 'Mystery' %}selected{% endif %}>Mystery</option>
+                            <option value="Science Fiction" {% if book.genre == 'Science Fiction' %}selected{% endif %}>Science Fiction</option>
+                            <option value="Fantasy" {% if book.genre == 'Fantasy' %}selected{% endif %}>Fantasy</option>
+                            <option value="Horror" {% if book.genre == 'Horror' %}selected{% endif %}>Horror</option>
+                            <option value="Romance" {% if book.genre == 'Romance' %}selected{% endif %}>Romance</option>
+                            <option value="Thriller" {% if book.genre == 'Thriller' %}selected{% endif %}>Thriller</option>
+                        </optgroup>
+
+                        <optgroup label="Non-Fiction">
+                            <option value="Biography" {% if book.genre == 'Biography' %}selected{% endif %}>Biography</option>
+                            <option value="Autobiography" {% if book.genre == 'Autobiography' %}selected{% endif %}>Autobiography</option>
+                            <option value="History" {% if book.genre == 'History' %}selected{% endif %}>History</option>
+                            <option value="Philosophy" {% if book.genre == 'Philosophy' %}selected{% endif %}>Philosophy</option>
+                            <option value="Psychology" {% if book.genre == 'Psychology' %}selected{% endif %}>Psychology</option>
+                        </optgroup>
+
+                        <optgroup label="Academic">
+                            <option value="Computer Science" {% if book.genre == 'Computer Science' %}selected{% endif %}>Computer Science</option>
+                            <option value="Mathematics" {% if book.genre == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+                            <option value="Physics" {% if book.genre == 'Physics' %}selected{% endif %}>Physics</option>
+                            <option value="Chemistry" {% if book.genre == 'Chemistry' %}selected{% endif %}>Chemistry</option>
+                            <option value="Biology" {% if book.genre == 'Biology' %}selected{% endif %}>Biology</option>
+                        </optgroup>
+
+                        <optgroup label="Other">
+                            <option value="Self-Help" {% if book.genre == 'Self-Help' %}selected{% endif %}>Self-Help</option>
+                            <option value="Business" {% if book.genre == 'Business' %}selected{% endif %}>Business</option>
+                            <option value="Cooking" {% if book.genre == 'Cooking' %}selected{% endif %}>Cooking</option>
+                            <option value="Travel" {% if book.genre == 'Travel' %}selected{% endif %}>Travel</option>
+                            <option value="Art" {% if book.genre == 'Art' %}selected{% endif %}>Art</option>
+                            <option value="Music" {% if book.genre == 'Music' %}selected{% endif %}>Music</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="total_copies">Number of Copies</label>
+                    <input type="number" name="total_copies" id="total_copies" min="1" value="{{ book.total_copies }}" required>
+                    <small class="help-text">Current available copies: {{ book.available_copies }}</small>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="4" required>{{ book.description }}</textarea>
+            </div>
+
+            <div class="file-upload-grid">
+                <div class="form-group">
+                    <label for="cover_image">Cover Image</label>
+                    {% if book.cover_image %}
+                        <div class="current-image">
+                            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="thumbnail">
+                            <p class="current-file">Current cover image</p>
+                        </div>
+                    {% endif %}
+                    <div class="file-input-wrapper">
+                        <input type="file" name="cover_image" id="cover_image" accept="image/*">
+                        <small class="help-text">Leave empty to keep current image</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pdf_file">PDF File</label>
+                    {% if book.pdf_file %}
+                        <p class="current-file">Current file: {{ book.pdf_file.name }}</p>
+                    {% endif %}
+                    <div class="file-input-wrapper">
+                        <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf">
+                        <small class="help-text">Leave empty to keep current file</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'librarian_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+    }
+
+    h2 {
+        color: #1f2937;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-size: 1.875rem;
+        font-weight: 600;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .file-upload-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #4b5563;
+        font-weight: 500;
+        font-size: 0.935rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background-color: #ffffff;
+        color: #1f2937;
+        font-size: 0.935rem;
+        transition: all 0.2s ease;
+    }
+
+    select {
+        cursor: pointer;
+        padding-right: 2rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234B5563'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    optgroup {
+        font-weight: 600;
+        color: #4b5563;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+    }
+
+    .help-text {
+        display: block;
+        margin-top: 0.375rem;
+        font-size: 0.815rem;
+        color: #6b7280;
+    }
+
+    .file-input-wrapper {
+        margin-top: 0.5rem;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        padding: 0.625rem;
+        border: 1px dashed #d1d5db;
+        border-radius: 6px;
+        background-color: #f9fafb;
+        color: #4b5563;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    input[type="file"]:hover {
+        background-color: #f3f4f6;
+        border-color: #9ca3af;
+    }
+
+    .current-image {
+        margin: 1rem 0;
+    }
+
+    .thumbnail {
+        max-width: 200px;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .current-file {
+        margin: 0.5rem 0;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.935rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        text-align: center;
+        flex: 1;
+    }
+
+    .btn-primary {
+        background-color: #2563eb;
+        color: #ffffff;
+        border: none;
+    }
+
+    .btn-secondary {
+        background-color: #f3f4f6;
+        color: #4b5563;
+        border: 1px solid #d1d5db;
+    }
+
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+    }
+
+    .btn-secondary:hover {
+        background-color: #e5e7eb;
+        border-color: #9ca3af;
+    }
+
+    @media (max-width: 768px) {
+        .auth-container {
+            margin: 1rem auto;
+        }
+
+        .card {
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .form-grid,
+        .file-upload-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
